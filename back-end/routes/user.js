@@ -27,4 +27,23 @@ router.post('/new-user', async(req, res) => {
     }
 })
 
+// PUT an user
+router.put('/user/:id', async(req, res) => {
+    const _id = req.params.id;
+    const body = req.body;
+    try {
+        const userDB = await User.findByIdAndUpdate(
+                _id, 
+                body,
+                {new: true, runValidators: true}
+            )
+        return res.json(userDB);
+    } catch (error) {
+        return res.status(400).json({
+            message: 'An error has occurred',
+            error
+        })
+    }
+})
+
 module.exports = router;
