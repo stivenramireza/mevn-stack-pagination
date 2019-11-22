@@ -4,7 +4,7 @@ const router = express.Router();
 // Import User model
 import User from '../models/user';
 
-// Has Password
+// Hash Password
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 

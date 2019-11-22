@@ -26,8 +26,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use('/api', require('./routes/grade'))
-app.use('/api', require('./routes/user'))
+app.use('/api', require('./routes/grade'));
+app.use('/api', require('./routes/user'));
+app.use('/api/login', require('./routes/login'));
 
 // Middleware for Vue.js router history mode
 const history = require('connect-history-api-fallback');
