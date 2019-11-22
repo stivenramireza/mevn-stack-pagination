@@ -8,6 +8,9 @@ import User from '../models/user';
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+// Filter API fields
+const _ = require('underscore');
+
 // POST a new user
 router.post('/new-user', async(req, res) => {
     const body = {
@@ -30,7 +33,10 @@ router.post('/new-user', async(req, res) => {
 // PUT an user
 router.put('/user/:id', async(req, res) => {
     const _id = req.params.id;
-    const body = req.body;
+    const body = _.pick(req.body, ['name', 'email', 'password', 'active']);
+    if(body.password){
+        body.password = bcrypt.hashSync(req.body.password, saltRounds);
+    }
     try {
         const userDB = await User.findByIdAndUpdate(
                 _id, 
