@@ -4,9 +4,18 @@ const router = express.Router();
 // Import User model
 import User from '../models/user';
 
+// Has Password
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 // POST a new user
 router.post('/new-user', async(req, res) => {
-    const body = req.body;
+    const body = {
+        name: req.body.name,
+        email: req.body.email,
+        role: req.body.role
+    }
+    body.password = bcrypt.hashSync(req.body.password, saltRounds);
     try {
         const userDB = await User.create(body);
         res.json(userDB);
