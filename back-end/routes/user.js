@@ -4,6 +4,8 @@ const router = express.Router();
 // Import User model
 import User from '../models/user';
 
+const { verifyAuth, verifyAdmin } = require('../middlewares/auth');
+
 // Hash Password
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -31,7 +33,7 @@ router.post('/new-user', async(req, res) => {
 })
 
 // PUT an user
-router.put('/user/:id', async(req, res) => {
+router.put('/user/:id', [verifyAuth, verifyAdmin], async(req, res) => {
     const _id = req.params.id;
     const body = _.pick(req.body, ['name', 'email', 'password', 'active']);
     if(body.password){
