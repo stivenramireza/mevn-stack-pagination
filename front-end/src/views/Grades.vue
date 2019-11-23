@@ -52,13 +52,19 @@
         </table>
         <nav aria-label="Page navigation example">
             <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item" :class="{'disabled': currentPage === 1}">
+                    <router-link :to="{query: {page: currentPage - 1}}"
+                    class="page-link" href="#">Previous</router-link>
+                </li>
                 <li class="page-item" :class="{'active': currentPage === index + 1}"
                 v-for="(item, index) in totalPages" :key="index">
-                    <router-link :to="{query: {pages: index + 1}}"
+                    <router-link :to="{query: {page: index + 1}}"
                     class="page-link" href="#">{{ index + 1 }}</router-link>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                <li class="page-item" :class="{'disabled': currentPage === totalPages}">
+                    <router-link :to="{query: { page: currentPage + 1}}"
+                    class="page-link" href="#">Next</router-link>
+                </li>
             </ul>
         </nav>
     </div>
