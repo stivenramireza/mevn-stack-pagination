@@ -32,6 +32,7 @@ export default {
                     console.log(res.data);
                     const token = res.data.token;
                     this.saveUser(token);
+                    this.$router.push({ name: 'grades' })
                 })
                 .catch(e => {
                     console.log(e.response);

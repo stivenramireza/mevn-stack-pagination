@@ -50,6 +50,17 @@
                 </tr>
             </tbody>
         </table>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item" :class="{'active': currentPage === index + 1}"
+                v-for="(item, index) in totalPages" :key="index">
+                    <router-link :to="{query: {pages: index + 1}}"
+                    class="page-link" href="#">{{ index + 1 }}</router-link>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
     </div>
 </template>
 
@@ -59,6 +70,9 @@ import { mapState } from 'vuex';
 export default {
     data() {
         return {
+            totalGrades: 0,
+            limit: 5,
+            currentPage: 1,
             grades: [],
             message: {color: '', text: ''},
             dismissSecs: 5,
@@ -69,12 +83,38 @@ export default {
         }
     },
     computed: {
-        ...mapState(['token'])
+        ...mapState(['token']),
+        totalPages(){
+            return Math.ceil(this.totalGrades / this.limit)
+        }
     },
-    created() {
-        this.listGrades();
+    watch: {
+        "$route.query.page": {
+            immediate: true,
+            handler(page){
+                page = parseInt(page) || 1;
+                this.pagination(page);
+                this.currentPage = page;
+            }
+        }
     },
     methods: {
+        pagination(page){
+            let config = {
+                headers: {
+                    token: this.token
+                }
+            }
+            let skip = (page - 1) * this.limit;
+            this.axios(`/grade?limit=${this.limit}&skip=${skip}`, config)
+                .then(res => {
+                    this.grades = res.data.gradesDB;
+                    this.totalGrades = res.data.totalGrades;
+                })
+                .catch(e => {
+                    console.log(e.response);
+                })
+        },
         alert(){
             this.message.color = 'success'
             this.message.text = 'Proofing alert'
@@ -88,8 +128,8 @@ export default {
             }
             this.axios('/grade', config)
             .then(res => {
-                console.log(res.data);
-                this.grades = res.data;
+                console.log(res.data.gradesDB);
+                this.grades = res.data.gradesDB;
             })
             .catch(e => {
                 console.log(e.response);

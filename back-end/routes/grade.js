@@ -35,12 +35,32 @@ router.get('/grade/:id', async(req, res) => {
     }
 });
 
-// Get all documents
+// Get all grades without pagination
+// router.get('/grade', verifyAuth, async(req, res) => {
+//     const userId = req.user._id;
+//     try {
+//         const gradesDB = await Grade.find({ userId });
+//         res.json(gradesDB);
+//     } catch (error) {
+//         return res.status(400).json({
+//             message: 'An error has occurred',
+//             error
+//         })
+//     }
+// })
+
+// GET all grades with pagination
 router.get('/grade', verifyAuth, async(req, res) => {
     const userId = req.user._id;
+    const limit_result = Number(req.query.limit) || 5;
+    const skip_result = Number(req.query.skip) || 0;
     try {
-        const gradesDB = await Grade.find({ userId });
-        res.json(gradesDB);
+        const gradesDB = await Grade.find({ userId }).limit(limit_result).skip(skip_result);
+
+        // Count documents
+        const totalGrades = await Grade.find({ userId }).countDocuments();
+
+        res.json({gradesDB, totalGrades});
     } catch (error) {
         return res.status(400).json({
             message: 'An error has occurred',
